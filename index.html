@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cheesecake Fund</title>
+    <title>Cheesecake - zbierka</title>
     <style>
         /* Simple, clean styling */
         body {
@@ -84,10 +84,27 @@
     </style>
 </head>
 <body>
+    <script>
+        /* =========================================
+           UPDATE YOUR PROGRESS HERE
+           ========================================= */
+        const config = {
+            currentAmount: 19.50,  // <--- EDIT THIS NUMBER when you get money
+            goalAmount: 20.00,     // <--- Set your cake goal here
+            currency: "€"
+        };
 
+        /* Logic to update the page */
+        const percentage = (config.currentAmount / config.goalAmount) * 100;
+        const cappedPercentage = Math.min(percentage, 100); // Don't overflow if we get extra tips!
+
+        document.getElementById('progressBar').style.width = cappedPercentage + "%";
+        document.getElementById('currentText').innerText = config.currentAmount.toFixed(2) + config.currency;
+        document.getElementById('goalText').innerText = config.goalAmount.toFixed(2) + config.currency;
+    </script>
     <div class="card">
-        <h1>🍰 Cheesecake Fund</h1>
-        <p>Help me bake a cake for the office! Contributions go towards ingredients.</p>
+        <h1>🍰 Cheesecake zbierka</h1>
+        <p>Keď sa vyzbiera uvedená suma, v kuchynke na 2. poschodí sa objaví cheesecake :)</p>
 
         <div class="progress-container">
             <div class="progress-bar" id="progressBar"></div>
@@ -100,32 +117,12 @@
         </div>
 
         <div class="qr-section">
-            <p><strong>Scan to contribute</strong></p>
+            <p><strong>Naskenuj pre zaslanie príspevku</strong></p>
             <img src="qr.png" class="qr-img" alt="Scan to pay">
             <p style="font-size: 0.8rem; color: #888; margin-top: 10px;">
-                Or send to: <br><strong>IBAN: SK12 1100 0000 0012 3456 7890</strong>
+                Alebo pošli sem: <br><strong>IBAN: SK26 7500 0000 0040 3216 0859</strong>
             </p>
         </div>
     </div>
-
-    <script>
-        /* =========================================
-           UPDATE YOUR PROGRESS HERE
-           ========================================= */
-        const config = {
-            currentAmount: 15.50,  // <--- EDIT THIS NUMBER when you get money
-            goalAmount: 60.00,     // <--- Set your cake goal here
-            currency: "€"
-        };
-
-        /* Logic to update the page */
-        const percentage = (config.currentAmount / config.goalAmount) * 100;
-        const cappedPercentage = Math.min(percentage, 100); // Don't overflow if we get extra tips!
-
-        document.getElementById('progressBar').style.width = cappedPercentage + "%";
-        document.getElementById('currentText').innerText = config.currency + config.currentAmount.toFixed(2);
-        document.getElementById('goalText').innerText = config.currency + config.goalAmount.toFixed(2);
-    </script>
 </body>
 </html>
-
