@@ -4,6 +4,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cheesecake - zbierka</title>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        /* =========================================
+           Wait for HTML to load, THEN run the script
+           ========================================= */
+
+        const config = {
+            currentAmount: 19.50,  // <--- EDIT THIS NUMBER
+            goalAmount: 20.00,     // <--- Set goal
+            currency: "€"
+        };
+
+        /* Logic to update the page */
+        const percentage = (config.currentAmount / config.goalAmount) * 100;
+        // Ensure it doesn't go over 100% or below 0%
+        let cappedPercentage = Math.min(percentage, 100);
+        cappedPercentage = Math.max(cappedPercentage, 0);
+
+        // Update elements
+        const bar = document.getElementById('progressBar');
+        const current = document.getElementById('currentText');
+        const goal = document.getElementById('goalText');
+
+        if (bar && current && goal) {
+             bar.style.width = cappedPercentage + "%";
+             // Your preferred format (19.50€)
+             current.innerText = config.currentAmount.toFixed(2) + config.currency;
+             goal.innerText = config.goalAmount.toFixed(2) + config.currency;
+        }
+    });
+    </script>
     <style>
         /* Simple, clean styling */
         body {
@@ -84,24 +115,6 @@
     </style>
 </head>
 <body>
-    <script>
-        /* =========================================
-           UPDATE YOUR PROGRESS HERE
-           ========================================= */
-        const config = {
-            currentAmount: 19.50,  // <--- EDIT THIS NUMBER when you get money
-            goalAmount: 20.00,     // <--- Set your cake goal here
-            currency: "€"
-        };
-
-        /* Logic to update the page */
-        const percentage = (config.currentAmount / config.goalAmount) * 100;
-        const cappedPercentage = Math.min(percentage, 100); // Don't overflow if we get extra tips!
-
-        document.getElementById('progressBar').style.width = cappedPercentage + "%";
-        document.getElementById('currentText').innerText = config.currentAmount.toFixed(2) + config.currency;
-        document.getElementById('goalText').innerText = config.goalAmount.toFixed(2) + config.currency;
-    </script>
     <div class="card">
         <h1>🍰 Cheesecake zbierka</h1>
         <p>Keď sa vyzbiera uvedená suma, v kuchynke na 2. poschodí sa objaví cheesecake :)</p>
@@ -126,3 +139,4 @@
     </div>
 </body>
 </html>
+
