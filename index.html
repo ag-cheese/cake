@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cheesecake - zbierka</title>
-<script>
+    <script>
     document.addEventListener("DOMContentLoaded", function() {
         /* =========================================
            Wait for HTML to load, THEN run the script
@@ -30,8 +30,8 @@
         if (bar && current && goal) {
              bar.style.width = cappedPercentage + "%";
              // Your preferred format (19.50€)
-             current.innerText = config.currentAmount.toFixed(2) + config.currency;
-             goal.innerText = config.goalAmount.toFixed(2) + config.currency;
+             current.innerText = config.currentAmount.toFixed(2) + ' ' + config.currency;
+             goal.innerText = config.goalAmount.toFixed(2) + ' ' + config.currency;
         }
     });
     </script>
@@ -139,4 +139,5 @@
     </div>
 </body>
 </html>
+
 
