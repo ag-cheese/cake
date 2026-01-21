@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>História koláčov</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: #f4f4f9; display: flex; justify-content: center; padding-top: 50px; }
+        .card { background: white; padding: 2rem; border-radius: 15px; width: 100%; max-width: 500px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .cake-item { border-bottom: 1px solid #eee; padding: 15px 0; }
+        .cake-item:last-child { border-bottom: none; }
+        .cake-name { font-weight: bold; font-size: 1.1rem; color: #333; }
+        .cake-dates { font-size: 0.85rem; color: #888; margin-top: 5px; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <nav style="margin-bottom: 1rem; border-bottom: 1px solid #eee; padding-bottom: 1rem;">
+            <a href="index.html" style="margin-right: 10px; color: #666; text-decoration: none;">Domov</a>
+            <a href="donations.html" style="margin-right: 10px; color: #666; text-decoration: none;">Dary</a>
+            <a href="history.html" style="font-weight: bold; color: #2196F3; text-decoration: none;">História</a>
+        </nav>
+
+        <h1>Upečené koláče 🍰</h1>
+        <div id="historyList">
+            </div>
+    </div>
+
+    <script>
+        fetch('data/history.json')
+            .then(response => response.json())
+            .then(data => {
+                const list = document.getElementById('historyList');
+                
+                // Sort by servedDate (newest first)
+                data.sort((a, b) => new Date(b.servedDate) - new Date(a.servedDate));
+
+                data.forEach(item => {
+                    const div = document.createElement('div');
+                    div.className = 'cake-item';
+                    div.innerHTML = `
+                        <div class="cake-name">${item.cakeName}</div>
+                        <div class="cake-dates">
+                            Vyzbierané: ${item.collectedDate} • Zjedené: ${item.servedDate}
+                        </div>
+                    `;
+                    list.appendChild(div);
+                });
+            });
+    </script>
+</body>
+</html>
