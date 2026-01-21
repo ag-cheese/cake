@@ -27,7 +27,7 @@
     </div>
 
     <script>
-        fetch('data/history.json')
+        fetch('db/history.json')
             .then(response => response.json())
             .then(data => {
                 const list = document.getElementById('historyList');
