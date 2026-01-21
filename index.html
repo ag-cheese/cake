@@ -132,12 +132,25 @@
         </nav>
     </div>
 
-    <script>
-        // 1. Fetch the data from the JSON file
-        fetch('db/status.json')
-            .then(response => response.json())
+<script>
+        // 1. Fetch data with a timestamp to BYPASS CACHE
+        fetch('db/status.json?v=' + new Date().getTime())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("HTTP error " + response.status);
+                }
+                return response.json();
+            })
             .then(config => {
-                
+                // Debug: Print the data to the Console (F12)
+                console.log("Data loaded:", config);
+
+                // Check if keys exist before using them
+                if (typeof config.currentAmount === 'undefined') {
+                    console.error("Missing 'currentAmount' in JSON. Keys found:", Object.keys(config));
+                    return;
+                }
+
                 let percentage = (config.currentAmount / config.goalAmount) * 100;
                 if (percentage > 100) percentage = 100;
                 if (percentage < 0) percentage = 0;
@@ -150,9 +163,14 @@
                 if (current) current.innerText = config.currentAmount.toFixed(2) + config.currency;
                 if (goal) goal.innerText = config.goalAmount.toFixed(2) + config.currency;
             })
-            .catch(error => console.error('Error loading status:', error));
+            .catch(error => {
+                console.error('Error loading status:', error);
+                // Optional: Show error on screen so you know it failed
+                document.getElementById('currentText').innerText = "Error";
+            });
     </script>
 
 </body>
 </html>
+
 
