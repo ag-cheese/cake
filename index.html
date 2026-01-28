@@ -135,12 +135,7 @@
 <script>
         // 1. Fetch data with a timestamp to BYPASS CACHE
         fetch('db/status.json?v=' + new Date().getTime())
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error("HTTP error " + response.status);
-                }
-                return response.json();
-            })
+            .then(response => response.json())
             .then(config => {
                 // Debug: Print the data to the Console (F12)
                 console.log("Data loaded:", config);
@@ -172,5 +167,6 @@
 
 </body>
 </html>
+
 
 
