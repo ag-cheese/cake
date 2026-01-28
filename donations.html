@@ -38,7 +38,7 @@
     </div>
 
     <script>
-        fetch('db/donations.json')
+        fetch('db/donations.json?v=' + new Date().getTime())
             .then(response => response.json())
             .then(data => {
                 const tbody = document.querySelector('#donationsTable tbody');
