@@ -28,7 +28,6 @@
             <thead>
                 <tr>
                     <th>Dátum</th>
-                    <th>Komentár</th>
                     <th style="text-align: right;">Suma</th>
                 </tr>
             </thead>
@@ -50,7 +49,6 @@
                     const row = document.createElement('tr');
                     row.innerHTML = `
                         <td>${item.date}</td>
-                        <td>${item.comment}</td>
                         <td class="amount-col">${item.amount.toFixed(2)}€</td>
                     `;
                     tbody.appendChild(row);
