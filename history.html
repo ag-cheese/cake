@@ -27,26 +27,52 @@
     </div>
 
     <script>
-        fetch('db/history.json?v=' + new Date().getTime())
-            .then(response => response.json())
-            .then(data => {
-                const list = document.getElementById('historyList');
-                
-                // Sort by servedDate (newest first)
-                data.sort((a, b) => new Date(b.servedDate) - new Date(a.servedDate));
+        // Combined timestamp and no-store for aggressive cache bypassing
+fetch('db/history.json?v=' + new Date().getTime(), { cache: 'no-store' })
+    .then(response => {
+        if (!response.ok) throw new Error("HTTP error " + response.status);
+        return response.json();
+    })
+    .then(data => {
+        const list = document.getElementById('historyList');
+        
+        // 1. Data Validation: Ensure we actually received an array
+        if (!Array.isArray(data)) {
+            console.error("Chyba: Očakávané pole (array), ale prišiel iný formát.");
+            list.innerHTML = "<p style='text-align: center; color: #888;'>Dáta sú poškodené.</p>";
+            return;
+        }
 
-                data.forEach(item => {
-                    const div = document.createElement('div');
-                    div.className = 'cake-item';
-                    div.innerHTML = `
-                        <div class="cake-name">${item.cakeName}</div>
-                        <div class="cake-dates">
-                            Vyzbierané: ${item.collectedDate} • Zjedené: ${item.servedDate}
-                        </div>
-                    `;
-                    list.appendChild(div);
-                });
-            });
+        // 2. Empty State Handling: What to show if no cakes have been baked yet
+        if (data.length === 0) {
+            list.innerHTML = "<p style='text-align: center; color: #888;'>Zatiaľ žiadna história koláčov.</p>";
+            return;
+        }
+
+        // 3. Safe Sorting
+        data.sort((a, b) => new Date(b.servedDate) - new Date(a.servedDate));
+
+        // 4. Safe Rendering with fallbacks for missing data
+        data.forEach(item => {
+            const div = document.createElement('div');
+            div.className = 'cake-item';
+            div.innerHTML = `
+                <div class="cake-name">${item.cakeName || 'Neznámy koláč'}</div>
+                <div class="cake-dates">
+                    Vyzbierané: ${item.collectedDate || '?'} • Zjedené: ${item.servedDate || '?'}
+                </div>
+            `;
+            list.appendChild(div);
+        });
+    })
+    .catch(error => {
+        console.error('Error loading history:', error);
+        // Display a user-friendly error message on the screen
+        const list = document.getElementById('historyList');
+        if (list) {
+            list.innerHTML = "<p style='text-align: center; color: red;'>Nepodarilo sa načítať históriu.</p>";
+        }
+    });
     </script>
 </body>
 </html>
