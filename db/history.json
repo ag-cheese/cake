@@ -1,4 +1,5 @@
 [
-  { "collectedDate": "2025-02-12", "servedDate": "", "cakeName": "?" }
+  { "collectedDate": "2025-02-17", "servedDate": "-", "cakeName": "prekvapenie" },
+  { "collectedDate": "2025-02-12", "servedDate": "2025-02-17", "cakeName": "Granátové jablko/jahoda cheesecake" },
   { "collectedDate": "2025-01-27", "servedDate": "2025-02-10", "cakeName": "Pistáciový cheesecake" }
 ]
