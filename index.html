@@ -136,43 +136,62 @@
     </div>
 
 <script>
-        // 1. Fetch data with a timestamp to BYPASS CACHE
-        fetch('db/status.json?v=' + new Date().getTime())
-            .then(response => {
-                if (!response.ok) throw new Error("HTTP error " + response.status);
-                return response.json();
-            })
-            .then(config => {
-                // Debug: Print the data to the Console (F12)
-                console.log("Data loaded:", config);
+       // Kombinácia timestampu a no-store pre absolútne obídenie cache
+fetch('db/status.json?v=' + new Date().getTime(), { cache: 'no-store' })
+    .then(response => {
+        if (!response.ok) throw new Error("HTTP error " + response.status);
+        return response.json();
+    })
+    .then(config => {
+        console.log("Data loaded:", config);
 
-                // Check if keys exist before using them
-                if (typeof config.currentAmount === 'undefined') {
-                    console.error("Missing 'currentAmount' in JSON. Keys found:", Object.keys(config));
-                    return;
-                }
+        // 1. Bezpečný prevod hodnôt na čísla
+        const currentAmt = Number(config.currentAmount);
+        const goalAmt = Number(config.goalAmount);
 
-                let percentage = (config.currentAmount / config.goalAmount) * 100;
-                if (percentage > 100) percentage = 100;
-                if (percentage < 0) percentage = 0;
+        // 2. Kontrola, či po prevode máme platné čísla
+        if (isNaN(currentAmt) || isNaN(goalAmt)) {
+            console.error("Chyba: currentAmount alebo goalAmount nie sú platné čísla.");
+            return;
+        }
 
-                const bar = document.getElementById('progressBar');
-                const current = document.getElementById('currentText');
-                const goal = document.getElementById('goalText');
+        // 3. Ochrana pred delením nulou
+        if (goalAmt <= 0) {
+            console.error("Chyba: goalAmount musí byť väčší ako 0.");
+            return;
+        }
 
-                if (bar) bar.style.width = percentage + "%";
-                if (current) current.innerText = config.currentAmount.toFixed(2) + config.currency;
-                if (goal) goal.innerText = config.goalAmount.toFixed(2) + config.currency;
-            })
-            .catch(error => {
-                console.error('Error loading status:', error);
-                // Optional: Show error on screen so you know it failed
-                document.getElementById('currentText').innerText = "Error";
-            });
+        // Výpočet percent
+        let percentage = (currentAmt / goalAmt) * 100;
+        if (percentage > 100) percentage = 100;
+        if (percentage < 0) percentage = 0;
+
+        // Načítanie elementov
+        const bar = document.getElementById('progressBar');
+        const current = document.getElementById('currentText');
+        const goal = document.getElementById('goalText');
+
+        // Bezpečná mena (fallback na '€' ak by v JSONe chýbala)
+        const currencySymbol = config.currency || '€';
+
+        // Aktualizácia DOMu
+        if (bar) bar.style.width = percentage + "%";
+        
+        // toFixed(2) teraz zbehne bezpečne
+        if (current) current.innerText = currentAmt.toFixed(2) + currencySymbol;
+        if (goal) goal.innerText = goalAmt.toFixed(2) + currencySymbol;
+    })
+    .catch(error => {
+        console.error('Error loading status:', error);
+        // Zobrazenie chyby priamo na stránke, aby si vedel, že niečo zlyhalo
+        const current = document.getElementById('currentText');
+        if (current) current.innerText = "Chyba načítania";
+    });
     </script>
 
 </body>
 </html>
+
 
 
 
