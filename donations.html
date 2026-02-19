@@ -37,23 +37,53 @@
     </div>
 
     <script>
-        fetch('db/donations.json?v=' + new Date().getTime())
-            .then(response => response.json())
-            .then(data => {
-                const tbody = document.querySelector('#donationsTable tbody');
-                
-                // Sort by date (newest first)
-                data.sort((a, b) => new Date(b.date) - new Date(a.date));
+        // Combined timestamp and no-store to force fresh data
+fetch('db/donations.json?v=' + new Date().getTime(), { cache: 'no-store' })
+    .then(response => {
+        if (!response.ok) throw new Error("HTTP error " + response.status);
+        return response.json();
+    })
+    .then(data => {
+        const tbody = document.querySelector('#donationsTable tbody');
+        
+        // 1. Data Validation: Ensure we actually received an array
+        if (!Array.isArray(data)) {
+            console.error("Chyba: Očakávané pole (array).");
+            tbody.innerHTML = "<tr><td colspan='2' style='text-align: center; color: #888;'>Dáta sú poškodené.</td></tr>";
+            return;
+        }
 
-                data.forEach(item => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td>${item.date}</td>
-                        <td class="amount-col">${item.amount.toFixed(2)}€</td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            });
+        // 2. Empty State Handling: What to show if there are no donations yet
+        if (data.length === 0) {
+            tbody.innerHTML = "<tr><td colspan='2' style='text-align: center; color: #888;'>Zatiaľ žiadne dary.</td></tr>";
+            return;
+        }
+
+        // 3. Safe Sorting by date (newest first)
+        data.sort((a, b) => new Date(b.date) - new Date(a.date));
+
+        // 4. Safe Rendering
+        data.forEach(item => {
+            // Safely convert amount to a Number to prevent .toFixed() from crashing
+            const amount = Number(item.amount);
+            const safeAmount = isNaN(amount) ? 0 : amount;
+
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${item.date || 'Neznámy dátum'}</td>
+                <td class="amount-col">${safeAmount.toFixed(2)}€</td>
+            `;
+            tbody.appendChild(row);
+        });
+    })
+    .catch(error => {
+        console.error('Error loading donations:', error);
+        // Display a user-friendly error message inside the table
+        const tbody = document.querySelector('#donationsTable tbody');
+        if (tbody) {
+            tbody.innerHTML = "<tr><td colspan='2' style='text-align: center; color: red;'>Nepodarilo sa načítať zoznam darov.</td></tr>";
+        }
+    });
     </script>
 </body>
 </html>
